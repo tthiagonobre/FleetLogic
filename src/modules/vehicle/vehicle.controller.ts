@@ -9,11 +9,14 @@ import {
     ParseUUIDPipe,
     HttpCode,
     HttpStatus,
+    UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { VehicleService } from './vehicle.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('vehicles')
 export class VehicleController {
     constructor(private readonly vehicleService: VehicleService) {}

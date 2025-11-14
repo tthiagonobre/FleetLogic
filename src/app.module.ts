@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DriverModule } from './modules/driver/driver.module';
 import { VehicleModule } from './modules/vehicle/vehicle.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { VehicleModule } from './modules/vehicle/vehicle.module';
     }),
     VehicleModule,
     DriverModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
