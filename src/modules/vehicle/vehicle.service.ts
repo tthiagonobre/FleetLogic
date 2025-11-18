@@ -5,6 +5,7 @@ import { Vehicle } from './vehicle.entity';
 import { Driver } from '../driver/driver.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
+import { TelemetryUpdateDto } from './dto/telemetry-update.dto';
 
 @Injectable()
 export class VehicleService {
@@ -59,4 +60,15 @@ export class VehicleService {
         const vehicle = await this.findOne(id);
         await this.vehicleRepository.remove(vehicle);
     }       
+
+    async updateTelemetry(
+        id: string,
+        telemetryUpdateDto: TelemetryUpdateDto,
+    ): Promise<void> {
+        const result = await this.vehicleRepository.update(id, telemetryUpdateDto);
+
+        if (result.affected === 0) {
+            throw new NotFoundException(`Veículo com ID ${id} não encontrado`);
+        }    
+    }
 }
