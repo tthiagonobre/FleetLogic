@@ -5,12 +5,14 @@ import { DriverModule } from './modules/driver/driver.module';
 import { VehicleModule } from './modules/vehicle/vehicle.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TelemetryModule } from './modules/telemetry/telemetry.module';
+import { validationSchema } from './config/validation.schema';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      validationSchema: validationSchema,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
