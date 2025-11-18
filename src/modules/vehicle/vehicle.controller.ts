@@ -18,7 +18,10 @@ import { UserRole } from '../../common/enums/user-role.enum';
 import { VehicleService } from './vehicle.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+
+@ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('vehicles')
 export class VehicleController {
