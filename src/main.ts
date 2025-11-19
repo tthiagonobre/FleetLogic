@@ -1,15 +1,39 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { WinstonModule, utilities as nestWinstonModuleUtilities } from 'nest-winston';
+import * as winston from 'winston';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+
+  const winstonLogger = WinstonModule.createLogger({
+    transports: [
+      new winston.transports.Console({
+        format: winston.format.combine(
+          winston.format.timestamp(),
+          winston.format.ms(),
+          nestWinstonModuleUtilities.format.nestLike('FleetLogic', {
+            colors: true,
+            prettyPrint: true,
+          }),
+          // Se quiser JSON puro (para produção), comente a linha acima e descomente a abaixo:
+          // winston.format.json(),
+        ),
+      }),
+    ],
+  });
+
+  const app = await NestFactory.create(AppModule, {
+    logger: winstonLogger,
+  });
 
   const configService = app.get(ConfigService);
+
+  const logger = new Logger('Bootstrap');
   
   app.setGlobalPrefix('api/v1');
   app.useGlobalFilters(new HttpExceptionFilter());
@@ -55,9 +79,11 @@ async function bootstrap() {
 
   const port = configService.get<number>('PORT') || 3000;
   await app.listen(port);
-  console.log(`Application 'FleetLogic' is running on: http://localhost:${port}/api/v1`);
-  console.log(`Swagger disponível em http://localhost:${port}/api/docs`);
-  
-  console.log(`MQTT conectado ao Broker em ${configService.get('MQTT_BROKER_URL')}`)
+
+  const brokerUrl = configService.get('MQTT_BROKER_URL');
+
+  logger.log(`Application is running on: http://localhost:${port}/api/v1`);
+  logger.log(`Swagger docs available at: http://localhost:${port}/api/docs`);
+  logger.log(`Connected to MQTT broker at: ${brokerUrl}`);
 }
 bootstrap();
