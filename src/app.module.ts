@@ -6,6 +6,8 @@ import { VehicleModule } from './modules/vehicle/vehicle.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TelemetryModule } from './modules/telemetry/telemetry.module';
 import { validationSchema } from './config/validation.schema';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { validationSchema } from './config/validation.schema';
         synchronize: true,
       }),
     }),
+    PrometheusModule.register(),
+    HealthModule,
     VehicleModule,
     DriverModule,
     AuthModule,
